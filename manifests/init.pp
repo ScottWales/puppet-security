@@ -62,6 +62,6 @@ class security {
 
   # Make sure firewall is set up before pacakges are installed
   Class['security::firewall_pre'] -> Yumrepo<||>
-  Class['security::firewall_pre'] -> Package<||>
+  Class['security::firewall_pre'] -> Package<|title!='iptables'|>
 
 }
