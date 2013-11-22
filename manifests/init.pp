@@ -30,8 +30,8 @@ class security {
 
   # Firewall defaults
   Firewall {
-    before  => Class['security::firewall_pre'],
-    require => Class['security::firewall_post'],
+    require => Class['security::firewall_pre'],
+    before  => Class['security::firewall_post'],
   }
 
   file {['/etc/passwd','/etc/group','/etc/fstab']:
@@ -61,8 +61,8 @@ class security {
   }
 
   # Make sure firewall is set up before pacakges are installed
-  Class['security::firewall_pre'] -> Yumrepo<||>
-  Class['security::firewall_pre'] -> Vcsrepo<||>
-  Class['security::firewall_pre'] -> Package<|title!='iptables'|>
+  Class['security::firewall_post'] -> Yumrepo<||>
+  Class['security::firewall_post'] -> Vcsrepo<||>
+  Class['security::firewall_post'] -> Package<|title!='iptables'|>
 
 }
