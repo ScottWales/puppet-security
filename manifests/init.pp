@@ -28,12 +28,26 @@ class security {
     group => root,
   }
 
-  # Firewall defaults
-  Firewall {
-    require => Class['security::firewall_pre'],
-    before  => Class['security::firewall_post'],
+  # Automatic updates 1 am every sunday
+  cron {'yum update':
+    command => '/usr/bin/yum update -y',
+    user    => 'root',
+    weekday => '0',
+    hour    => '1',
+    minute  => '0',
   }
 
+  # Lock down root
+  user {'root':
+    ensure => present,
+    shell  => '/sbin/nologin',
+  }
+  file {'/etc/securetty':
+    ensure  => present,
+    content => '',
+  }
+
+  # Secure files
   file {['/etc/passwd','/etc/group','/etc/fstab']:
     mode  => '0644',
   }
@@ -42,6 +56,12 @@ class security {
   }
   file {'/root':
     mode  => '0500',
+  }
+
+  # Firewall defaults
+  Firewall {
+    require => Class['security::firewall_pre'],
+    before  => Class['security::firewall_post'],
   }
 
   # Remove any firewall rules not defined in puppet
